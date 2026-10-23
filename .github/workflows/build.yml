@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - alexa-voice-v2
   workflow_dispatch:
 
 jobs:
@@ -28,7 +29,7 @@ jobs:
       - name: Build Alexa APK
         run: |
           chmod +x ./gradlew
-          ./gradlew assembleDebug
+          ./gradlew assembleDebug -Pandroid.useAndroidX=true
 
       - name: Upload Alexa APK
         uses: actions/upload-artifact@v4
