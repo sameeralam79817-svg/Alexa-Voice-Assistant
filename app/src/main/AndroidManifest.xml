@@ -6,14 +6,21 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE"/>
 
-    <uses-feature
-        android:name="android.hardware.microphone"
-        android:required="true"/>
-
     <application
         android:label="Alexa"
         android:allowBackup="false"
         android:theme="@android:style/Theme.Material.Light.NoActionBar">
+
+        <activity
+            android:name="com.sameer.alexa.MainActivity"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+
+        </activity>
 
     </application>
 
