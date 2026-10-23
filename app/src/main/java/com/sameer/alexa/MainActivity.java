@@ -29,7 +29,6 @@ public class MainActivity extends Activity {
 
         layout.addView(title);
         layout.addView(button);
-
         setContentView(layout);
 
         tts = new TextToSpeech(this, status -> {
@@ -53,4 +52,9 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         if (tts != null) {
-            tts.stop
+            tts.stop();
+            tts.shutdown();
+        }
+        super.onDestroy();
+    }
+}
