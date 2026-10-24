@@ -154,9 +154,11 @@ public class MainActivity extends Activity {
                 }
             });
 
-            statusText.setText(
-                "Alexa सुन रही है..."
-            );
+            if (wakeWordActive) {
+                statusText.setText(
+                    "Alexa सुन रही है..."
+                );
+            }
 
         } catch (Exception e) {
 
@@ -227,4 +229,116 @@ public class MainActivity extends Activity {
 
         if (requestCode == MIC_PERMISSION_REQUEST) {
 
-            if (grantResults.length > 0
+            if (grantResults.length > 0 &&
+                grantResults[0] ==
+                PackageManager.PERMISSION_GRANTED) {
+
+                if (startWakeAfterPermission) {
+                    startWakeWord();
+                } else {
+                    startListening();
+                }
+
+            } else {
+
+                statusText.setText(
+                    "Microphone की अनुमति चाहिए।"
+                );
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(
+            int requestCode,
+            int resultCode,
+            Intent data) {
+
+        super.onActivityResult(
+            requestCode,
+            resultCode,
+            data
+        );
+
+        if (requestCode == VOICE_REQUEST &&
+            resultCode == RESULT_OK &&
+            data != null) {
+
+            ArrayList<String> results =
+                data.getStringArrayListExtra(
+                    RecognizerIntent.EXTRA_RESULTS
+                );
+
+            if (results != null &&
+                !results.isEmpty()) {
+
+                String speech = results.get(0);
+
+                statusText.setText(
+                    "आपने कहा: " + speech
+                );
+
+                respondToSpeech(speech);
+            }
+        }
+    }
+
+    private void respondToSpeech(String speech) {
+
+        String reply;
+
+        if (speech.contains("नमस्ते") ||
+            speech.toLowerCase().contains("hello")) {
+
+            reply =
+                "नमस्ते! मैं आपकी क्या मदद कर सकती हूँ?";
+
+        } else if (speech.contains("नाम")) {
+
+            reply = "मेरा नाम एलेक्सा है।";
+
+        } else {
+
+            reply =
+                "मैंने आपकी बात सुनी: " + speech;
+        }
+
+        if (tts != null) {
+
+            tts.speak(
+                reply,
+                TextToSpeech.QUEUE_FLUSH,
+                null,
+                "alexa_reply"
+            );
+        }
+    }
+
+    @Override
+    protected void onStop() {
+
+        stopWakeWord();
+
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        stopWakeWord();
+
+        if (detector != null) {
+
+            detector.release();
+            detector = null;
+        }
+
+        if (tts != null) {
+
+            tts.stop();
+            tts.shutdown();
+        }
+
+        super.onDestroy();
+    }
+}
