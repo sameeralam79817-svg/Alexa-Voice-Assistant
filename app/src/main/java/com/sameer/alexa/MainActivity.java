@@ -126,7 +126,7 @@ public class MainActivity extends Activity {
                     .setModel(
                         OpenWakeWord.BuiltInModel.ALEXA
                     )
-                    .setThreshold(0.5f)
+                    .setThreshold(0.3f)
                     .build();
             }
 
@@ -138,20 +138,27 @@ public class MainActivity extends Activity {
                     return;
                 }
 
-                stopWakeWord();
+                runOnUiThread(() -> {
 
-                statusText.setText(
-                    "Alexa ने आपकी आवाज पहचान ली!"
-                );
+                    if (!wakeWordActive) {
+                        return;
+                    }
 
-                if (tts != null) {
-                    tts.speak(
-                        "जी, बोलिए!",
-                        TextToSpeech.QUEUE_FLUSH,
-                        null,
-                        "alexa_wake_reply"
+                    statusText.setText(
+                        "Alexa ने आपकी आवाज पहचान ली!"
                     );
-                }
+
+                    if (tts != null) {
+                        tts.speak(
+                            "जी, बोलिए!",
+                            TextToSpeech.QUEUE_FLUSH,
+                            null,
+                            "alexa_wake_reply"
+                        );
+                    }
+
+                    stopWakeWord();
+                });
             });
 
             if (wakeWordActive) {
