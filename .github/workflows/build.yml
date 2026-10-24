@@ -40,7 +40,7 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
           chmod +x ./gradlew
-          ./gradlew assembleRelease \
+          ./gradlew assembleRelease -Pandroid.useAndroidX=true \
             -Pandroid.injected.signing.store.file="$RUNNER_TEMP/alexa-release.jks" \
             -Pandroid.injected.signing.store.password="$KEYSTORE_PASSWORD" \
             -Pandroid.injected.signing.key.alias="$KEY_ALIAS" \
